@@ -8,6 +8,8 @@ const Customers = () => {
   const [customers, setCustomers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [fetchingData, setFetchingData] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -25,6 +27,7 @@ const Customers = () => {
         ...doc.data()
       }));
       setCustomers(customersData);
+      setFetchingData(false);
     });
 
     return () => unsubscribe();
@@ -32,6 +35,7 @@ const Customers = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     
     try {
       if (editingCustomer) {
@@ -47,6 +51,8 @@ const Customers = () => {
       resetForm();
     } catch (error) {
       showToast('Failed to save customer', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -115,7 +121,16 @@ const Customers = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {customers.length === 0 ? (
+              {fetchingData ? (
+                <tr>
+                  <td colSpan="7" className="px-6 py-8 text-center">
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-6 h-6 border-2 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+                      <span className="text-gray-500">Loading customers...</span>
+                    </div>
+                  </td>
+                </tr>
+              ) : customers.length === 0 ? (
                 <tr>
                   <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
                     No customers found. Add your first customer to get started.
@@ -243,9 +258,17 @@ const Customers = () => {
               <div className="flex gap-3 pt-4">
                 <button
                   type="submit"
-                  className="flex-1 bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 transition cursor-pointer"
+                  disabled={loading}
+                  className="flex-1 bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  {editingCustomer ? 'Update Customer' : 'Add Customer'}
+                  {loading ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      {editingCustomer ? 'Updating...' : 'Adding...'}
+                    </>
+                  ) : (
+                    editingCustomer ? 'Update Customer' : 'Add Customer'
+                  )}
                 </button>
                 <button
                   type="button"

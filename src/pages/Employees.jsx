@@ -8,6 +8,8 @@ const Employees = () => {
   const [employees, setEmployees] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [fetchingData, setFetchingData] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -26,6 +28,7 @@ const Employees = () => {
         ...doc.data()
       }));
       setEmployees(employeesData);
+      setFetchingData(false);
     });
 
     return () => unsubscribe();
@@ -33,6 +36,7 @@ const Employees = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     
     try {
       if (editingEmployee) {
@@ -48,6 +52,8 @@ const Employees = () => {
       resetForm();
     } catch (error) {
       showToast('Failed to save employee', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -119,7 +125,16 @@ const Employees = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {employees.length === 0 ? (
+              {fetchingData ? (
+                <tr>
+                  <td colSpan="8" className="px-6 py-8 text-center">
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-6 h-6 border-2 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+                      <span className="text-gray-500">Loading employees...</span>
+                    </div>
+                  </td>
+                </tr>
+              ) : employees.length === 0 ? (
                 <tr>
                   <td colSpan="8" className="px-6 py-8 text-center text-gray-500">
                     No employees found. Add your first employee to get started.
@@ -262,9 +277,17 @@ const Employees = () => {
               <div className="flex gap-3 pt-4">
                 <button
                   type="submit"
-                  className="flex-1 bg-purple-600 text-white py-2 rounded-lg font-semibold hover:bg-purple-700 transition cursor-pointer"
+                  disabled={loading}
+                  className="flex-1 bg-purple-600 text-white py-2 rounded-lg font-semibold hover:bg-purple-700 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  {editingEmployee ? 'Update Employee' : 'Add Employee'}
+                  {loading ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      {editingEmployee ? 'Updating...' : 'Adding...'}
+                    </>
+                  ) : (
+                    editingEmployee ? 'Update Employee' : 'Add Employee'
+                  )}
                 </button>
                 <button
                   type="button"
