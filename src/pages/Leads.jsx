@@ -29,7 +29,12 @@ const Leads = () => {
       const leadsData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      }));
+      })).sort((a, b) => {
+        // Sort by createdAt in descending order (latest first)
+        const dateA = new Date(a.createdAt || 0);
+        const dateB = new Date(b.createdAt || 0);
+        return dateB - dateA;
+      });
       setLeads(leadsData);
       setFetchingData(false);
     });
