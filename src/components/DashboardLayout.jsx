@@ -9,7 +9,10 @@ import {
   UserCog, 
   LogOut, 
   Menu, 
-  X 
+  X,
+  Mail,
+  Briefcase,
+  FileText
 } from 'lucide-react';
 
 const DashboardLayout = () => {
@@ -39,6 +42,9 @@ const DashboardLayout = () => {
     { name: 'Leads', path: '/dashboard/leads', icon: Users },
     { name: 'Customers', path: '/dashboard/customers', icon: UserCheck },
     { name: 'Employees', path: '/dashboard/employees', icon: UserCog },
+    { name: 'Contact From Website', path: '/dashboard/contact-from-website', icon: Mail },
+    { name: 'Careers From Website', path: '/dashboard/careers-from-website', icon: Briefcase },
+    { name: 'Free Quote From Website', path: '/dashboard/freequote-from-website', icon: FileText },
   ];
 
   return (
@@ -46,7 +52,7 @@ const DashboardLayout = () => {
       {/* Mobile Overlay */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-[rgba(0,0,0,0.5)] z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
