@@ -162,6 +162,7 @@ const Leads = () => {
           <option value="Contacted">Contacted</option>
           <option value="Followup">Followup</option>
           <option value="Awaiting for response">Awaiting for response</option>
+          <option value="Not reachable">Not reachable</option>
           <option value="Confirmed">Confirmed</option>
           <option value="Declined">Declined</option>
         </select>
@@ -214,6 +215,7 @@ const Leads = () => {
                         lead.status === 'New' ? 'bg-blue-100 text-blue-800' :
                         lead.status === 'Followup' ? 'bg-yellow-100 text-yellow-800' :
                         lead.status === 'Awaiting for response' ? 'bg-orange-100 text-orange-800' :
+                        lead.status === 'Not reachable' ? 'bg-purple-100 text-purple-800' :
                         lead.status === 'Confirmed' ? 'bg-green-100 text-green-800' :
                         lead.status === 'Declined' ? 'bg-red-100 text-red-800' :
                         'bg-gray-100 text-gray-800'
@@ -369,6 +371,7 @@ const Leads = () => {
                   <option value="Followup">Followup</option>
                   <option value="Contacted">Contacted</option>
                   <option value="Awaiting for response">Awaiting for response</option>
+                  <option value="Not reachable">Not reachable</option>
                   <option value="Confirmed">Confirmed</option>
                   <option value="Declined">Declined</option>
                 </select>
