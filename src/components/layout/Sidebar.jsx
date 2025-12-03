@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { UserCircle, Users, Briefcase, Wrench, X } from 'lucide-react';
+import { UserCircle, Users, Briefcase, Wrench, X, ClipboardList } from 'lucide-react';
 
 const Sidebar = ({ isOpen, onClose }) => {
   const menuItems = [
@@ -7,6 +7,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     { path: '/customers', label: 'Customers', icon: Users },
     { path: '/employees', label: 'Employees', icon: Briefcase },
     { path: '/services', label: 'Services', icon: Wrench },
+    { path: '/career-requests', label: 'Career Requests', icon: ClipboardList },
   ];
 
   return (

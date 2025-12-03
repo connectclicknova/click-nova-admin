@@ -6,6 +6,7 @@ import Leads from './pages/Leads';
 import Customers from './pages/Customers';
 import Employees from './pages/Employees';
 import Services from './pages/Services';
+import CareerRequests from './pages/CareerRequests';
 import Login from './pages/Login';
 
 const ProtectedRoute = ({ children }) => {
@@ -61,6 +62,7 @@ const App = () => {
         <Route path="customers" element={<Customers />} />
         <Route path="employees" element={<Employees />} />
         <Route path="services" element={<Services />} />
+        <Route path="career-requests" element={<CareerRequests />} />
         <Route path="*" element={<Navigate to="/leads" replace />} />
       </Route>
     </Routes>
