@@ -1,433 +1,297 @@
 import { useState, useEffect } from 'react';
-import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
-import { db } from '../firebase';
-import { useToast } from '../context/ToastContext';
-import { Plus, Edit2, Trash2, X, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Search, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { collection, query, orderBy, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
+import { db } from '../config/firebase';
+import AddLeadModal from '../components/leads/AddLeadModal';
+import LeadCard from '../components/leads/LeadCard';
 
 const Leads = () => {
   const [leads, setLeads] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [editingLead, setEditingLead] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [fetchingData, setFetchingData] = useState(true);
+  const [filteredLeads, setFilteredLeads] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedLead, setSelectedLead] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [requirementFilter, setRequirementFilter] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
-  const leadsPerPage = 48;
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    address: '',
-    status: 'New',
-    followupDate: '',
-    comments: ''
-  });
-  const { showToast } = useToast();
+  const itemsPerPage = 24;
 
+  const statusOptions = [
+    'All',
+    'New',
+    'Followup',
+    'Not Reachable',
+    'Contacted',
+    'Details send in Whatsapp',
+    'More Changes to be Customer',
+    'Confirmed',
+    'Customer',
+  ];
+
+  const serviceOptions = [
+    'All',
+    'Web Development',
+    'Mobile App Development',
+    'UI/UX Design',
+    'Digital Marketing',
+    'SEO Services',
+    'Cloud Solutions',
+    'Consulting',
+    'Other',
+  ];
+
+  // Fetch leads from Firestore
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, 'leads'), (snapshot) => {
-      const leadsData = snapshot.docs.map(doc => ({
+    const q = query(collection(db, 'leads'), orderBy('createdAt', 'desc'));
+    
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const leadsData = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
-      })).sort((a, b) => {
-        // Sort by createdAt in descending order (latest first)
-        const dateA = new Date(a.createdAt || 0);
-        const dateB = new Date(b.createdAt || 0);
-        return dateB - dateA;
-      });
+        ...doc.data(),
+      }));
       setLeads(leadsData);
-      setFetchingData(false);
+      setLoading(false);
+    }, (error) => {
+      console.error('Error fetching leads:', error);
+      setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    try {
-      if (editingLead) {
-        await updateDoc(doc(db, 'leads', editingLead.id), formData);
-        showToast('Lead updated successfully', 'success');
-      } else {
-        await addDoc(collection(db, 'leads'), {
-          ...formData,
-          createdAt: new Date().toISOString()
-        });
-        showToast('Lead added successfully', 'success');
-      }
-      resetForm();
-    } catch (error) {
-      showToast('Failed to save lead', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleEdit = (lead) => {
-    setEditingLead(lead);
-    setFormData({
-      name: lead.name,
-      phone: lead.phone,
-      address: lead.address || '',
-      status: lead.status,
-      followupDate: lead.followupDate || '',
-      comments: lead.comments || ''
-    });
-    setShowModal(true);
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this lead?')) {
-      try {
-        await deleteDoc(doc(db, 'leads', id));
-        showToast('Lead deleted successfully', 'success');
-      } catch (error) {
-        showToast('Failed to delete lead', 'error');
-      }
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      name: '',
-      phone: '',
-      address: '',
-      status: 'New',
-      followupDate: '',
-      comments: ''
-    });
-    setEditingLead(null);
-    setShowModal(false);
-  };
-
-  // Filter leads based on search and status
-  const filteredLeads = leads.filter(lead => {
-    const matchesSearch = lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          lead.phone.includes(searchTerm) ||
-                          (lead.address && lead.address.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesStatus = statusFilter === 'All' || lead.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
-
-  // Pagination logic
-  const totalPages = Math.ceil(filteredLeads.length / leadsPerPage);
-  const indexOfLastLead = currentPage * leadsPerPage;
-  const indexOfFirstLead = indexOfLastLead - leadsPerPage;
-  const currentLeads = filteredLeads.slice(indexOfFirstLead, indexOfLastLead);
-
-  // Reset to page 1 when search or filter changes
+  // Filter leads based on search and filters
   useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm, statusFilter]);
+    let result = [...leads];
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Search filter
+    if (searchTerm) {
+      result = result.filter(
+        (lead) =>
+          lead.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          lead.mobileNumber?.includes(searchTerm) ||
+          lead.address?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Status filter
+    if (statusFilter !== 'All') {
+      result = result.filter((lead) => lead.status === statusFilter);
+    }
+
+    // Requirement filter
+    if (requirementFilter !== 'All') {
+      result = result.filter((lead) => lead.requirement === requirementFilter);
+    }
+
+    setFilteredLeads(result);
+    setCurrentPage(1); // Reset to first page when filters change
+  }, [leads, searchTerm, statusFilter, requirementFilter]);
+
+  // Pagination
+  const totalPages = Math.ceil(filteredLeads.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentLeads = filteredLeads.slice(startIndex, endIndex);
+
+  const handleAddLead = () => {
+    setSelectedLead(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEditLead = (lead) => {
+    setSelectedLead(lead);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteLead = async (lead) => {
+    if (window.confirm(`Are you sure you want to delete lead for ${lead.customerName}?`)) {
+      try {
+        await deleteDoc(doc(db, 'leads', lead.id));
+      } catch (error) {
+        console.error('Error deleting lead:', error);
+        alert('Error deleting lead. Please try again.');
+      }
+    }
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedLead(null);
+  };
+
+  const handleSuccess = () => {
+    // Data is updated via real-time listener
   };
 
   return (
-    <div>
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 sm:mb-8 gap-4">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Leads Management</h1>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold text-gray-800">Leads Management</h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Manage and track all your leads
+          </p>
+        </div>
         <button
-          onClick={() => setShowModal(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700 transition cursor-pointer w-full sm:w-auto"
+          onClick={handleAddLead}
+          className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors cursor-pointer"
         >
           <Plus className="w-5 h-5" />
           Add Lead
         </button>
       </div>
 
-      {/* Search and Filter Controls */}
-      <div className="mb-6 flex flex-col sm:flex-row gap-4">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input
-            type="text"
-            placeholder="Search by name, phone, or address..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-          />
-        </div>
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none cursor-pointer"
-        >
-          <option value="All">All Status</option>
-          <option value="New">New</option>
-          <option value="Contacted">Contacted</option>
-          <option value="Followup">Followup</option>
-          <option value="Awaiting for response">Awaiting for response</option>
-          <option value="Not reachable">Not reachable</option>
-          <option value="Morechanges for Customer">Morechanges for Customer</option>
-          <option value="Confirmed">Confirmed</option>
-          <option value="Declined">Declined</option>
-        </select>
-      </div>
-
-      {/* Results count */}
-      <div className="mb-4 text-sm text-gray-600">
-        Showing {currentLeads.length} of {filteredLeads.length} leads
-        {searchTerm && <span> (filtered from {leads.length} total)</span>}
-      </div>
-
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[800px]">
-            <thead className="bg-gray-50 border-b">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Address</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Followup Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Comments</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {fetchingData ? (
-                <tr>
-                  <td colSpan="7" className="px-6 py-8 text-center">
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                      <span className="text-gray-500">Loading leads...</span>
-                    </div>
-                  </td>
-                </tr>
-              ) : currentLeads.length === 0 ? (
-                <tr>
-                  <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
-                    {searchTerm || statusFilter !== 'All' ? 'No leads match your search criteria.' : 'No leads found. Add your first lead to get started.'}
-                  </td>
-                </tr>
-              ) : (
-                currentLeads.map((lead) => (
-                  <tr key={lead.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{lead.name}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{lead.phone}</td>
-                    <td className="px-6 py-4 text-sm text-gray-500">{lead.address || '-'}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        lead.status === 'New' ? 'bg-blue-100 text-blue-800' :
-                        lead.status === 'Followup' ? 'bg-yellow-100 text-yellow-800' :
-                        lead.status === 'Awaiting for response' ? 'bg-orange-100 text-orange-800' :
-                        lead.status === 'Not reachable' ? 'bg-purple-100 text-purple-800' :
-                        lead.status === 'Morechanges for Customer' ? 'bg-indigo-100 text-indigo-800' :
-                        lead.status === 'Confirmed' ? 'bg-green-100 text-green-800' :
-                        lead.status === 'Declined' ? 'bg-red-100 text-red-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
-                        {lead.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {lead.followupDate ? new Date(lead.followupDate).toLocaleDateString() : '-'}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
-                      {lead.comments ? (
-                        <span className="line-clamp-2" title={lead.comments}>{lead.comments}</span>
-                      ) : '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={() => handleEdit(lead)}
-                        className="text-blue-600 hover:text-blue-900 mr-3 cursor-pointer"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(lead.id)}
-                        className="text-red-600 hover:text-red-900 cursor-pointer"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Pagination Controls */}
-      {filteredLeads.length > leadsPerPage && (
-        <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-sm text-gray-600">
-            Page {currentPage} of {totalPages}
-          </div>
-          <div className="flex flex-wrap gap-2 justify-center">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center gap-1 text-sm"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Previous</span>
-            </button>
-            
-            <div className="flex gap-1 flex-wrap justify-center">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
-                // Show first page, last page, current page, and pages around current
-                if (
-                  pageNum === 1 ||
-                  pageNum === totalPages ||
-                  (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
-                ) {
-                  return (
-                    <button
-                      key={pageNum}
-                      onClick={() => handlePageChange(pageNum)}
-                      className={`px-3 sm:px-4 py-2 rounded-lg cursor-pointer text-sm ${
-                        currentPage === pageNum
-                          ? 'bg-blue-600 text-white'
-                          : 'border border-gray-300 hover:bg-gray-50'
-                      }`}
-                    >
-                      {pageNum}
-                    </button>
-                  );
-                } else if (
-                  pageNum === currentPage - 2 ||
-                  pageNum === currentPage + 2
-                ) {
-                  return <span key={pageNum} className="px-2 py-2 text-sm">...</span>;
-                }
-                return null;
-              })}
+      {/* Search and Filters */}
+      <div className="bg-white rounded-xl border border-gray-200 p-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {/* Search */}
+          <div className="md:col-span-2">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by name, phone, or address..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              />
             </div>
+          </div>
 
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center gap-1 text-sm"
+          {/* Status Filter */}
+          <div>
+            <div className="relative">
+              <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all appearance-none"
+              >
+                {statusOptions.map((status) => (
+                  <option key={status} value={status}>
+                    {status === 'All' ? 'All Status' : status}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Requirement Filter */}
+          <div>
+            <select
+              value={requirementFilter}
+              onChange={(e) => setRequirementFilter(e.target.value)}
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
             >
-              <span className="hidden sm:inline">Next</span>
-              <ChevronRight className="w-4 h-4" />
-            </button>
+              {serviceOptions.map((service) => (
+                <option key={service} value={service}>
+                  {service === 'All' ? 'All Services' : service}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
-      )}
 
-      {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{backgroundColor: 'rgba(0,0,0,0.5)'}}>
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center p-6 border-b">
-              <h2 className="text-xl font-bold text-gray-800">
-                {editingLead ? 'Edit Lead' : 'Add New Lead'}
-              </h2>
-              <button onClick={resetForm} className="text-gray-400 hover:text-gray-600 cursor-pointer">
-                <X className="w-6 h-6" />
+        {/* Results Count */}
+        <div className="mt-4 pt-4 border-t border-gray-200">
+          <p className="text-sm text-gray-600">
+            Showing {currentLeads.length} of {filteredLeads.length} leads
+            {(searchTerm || statusFilter !== 'All' || requirementFilter !== 'All') && (
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setStatusFilter('All');
+                  setRequirementFilter('All');
+                }}
+                className="ml-2 text-indigo-600 hover:text-indigo-700 font-medium cursor-pointer"
+              >
+                Clear filters
               </button>
-            </div>
-            
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name <span className="text-red-500">*</span></label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                />
-              </div>
+            )}
+          </p>
+        </div>
+      </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone <span className="text-red-500">*</span></label>
-                <input
-                  type="tel"
-                  required
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                <textarea
-                  value={formData.address}
-                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                  rows="2"
-                  placeholder="Enter address"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                <select
-                  value={formData.status}
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                >
-                  <option value="New">New</option>
-
-                  <option value="Followup">Followup</option>
-                  <option value="Contacted">Contacted</option>
-                  <option value="Awaiting for response">Awaiting for response</option>
-                  <option value="Not reachable">Not reachable</option>
-                  <option value="Morechanges for Customer">Morechanges for Customer</option>
-                  <option value="Confirmed">Confirmed</option>
-                  <option value="Declined">Declined</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Followup Date</label>
-                <input
-                  type="date"
-                  value={formData.followupDate}
-                  onChange={(e) => setFormData({ ...formData, followupDate: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Comments</label>
-                <textarea
-                  value={formData.comments}
-                  onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                  rows="3"
-                  placeholder="Add any comments or notes"
-                />
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {loading ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      {editingLead ? 'Updating...' : 'Adding...'}
-                    </>
-                  ) : (
-                    editingLead ? 'Update Lead' : 'Add Lead'
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-300 transition cursor-pointer"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
+      {/* Leads Grid */}
+      {loading ? (
+        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+          <svg className="inline-block w-12 h-12 text-indigo-600 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <p className="mt-4 text-gray-600 font-medium">Loading leads...</p>
+        </div>
+      ) : currentLeads.length > 0 ? (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {currentLeads.map((lead) => (
+              <LeadCard
+                key={lead.id}
+                lead={lead}
+                onEdit={handleEditLead}
+                onDelete={handleDeleteLead}
+              />
+            ))}
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="bg-white rounded-xl border border-gray-200 p-4">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-gray-600">
+                  Page {currentPage} of {totalPages}
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                    className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                    className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Search className="w-8 h-8 text-gray-400" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">No leads found</h3>
+          <p className="text-gray-600 mb-6">
+            {searchTerm || statusFilter !== 'All' || requirementFilter !== 'All'
+              ? 'Try adjusting your filters'
+              : 'Get started by adding your first lead'}
+          </p>
+          {!searchTerm && statusFilter === 'All' && requirementFilter === 'All' && (
+            <button
+              onClick={handleAddLead}
+              className="px-6 py-2.5 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors cursor-pointer"
+            >
+              Add Your First Lead
+            </button>
+          )}
         </div>
       )}
+
+      {/* Add/Edit Lead Modal */}
+      <AddLeadModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        lead={selectedLead}
+        onSuccess={handleSuccess}
+      />
     </div>
   );
 };

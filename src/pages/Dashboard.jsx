@@ -1,38 +1,23 @@
-import { Users, UserCheck, UserCog, TrendingUp } from 'lucide-react';
-
 const Dashboard = () => {
-  const stats = [
-    { name: 'Total Leads', value: '0', icon: Users, color: 'bg-blue-500' },
-    { name: 'Total Customers', value: '0', icon: UserCheck, color: 'bg-green-500' },
-    { name: 'Total Employees', value: '0', icon: UserCog, color: 'bg-purple-500' },
-    { name: 'Conversion Rate', value: '0%', icon: TrendingUp, color: 'bg-orange-500' },
-  ];
-
   return (
-    <div>
-      <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 sm:mb-8">Dashboard</h1>
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-        {stats.map((stat) => (
-          <div key={stat.name} className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm font-medium">{stat.name}</p>
-                <p className="text-3xl font-bold text-gray-800 mt-2">{stat.value}</p>
-              </div>
-              <div className={`${stat.color} p-3 rounded-lg`}>
-                <stat.icon className="w-6 h-6 text-white" />
-              </div>
-            </div>
+    <div className="space-y-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+        <div className="text-center max-w-2xl mx-auto space-y-6">
+          <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto">
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z" />
+            </svg>
           </div>
-        ))}
-      </div>
+          
+          <div>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-2">Dashboard</h2>
+            <p className="text-gray-500">Welcome to Click Nova Admin Panel</p>
+          </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Welcome to Click Nova Admin</h2>
-        <p className="text-gray-600">
-          Manage your digital marketing business efficiently. Track leads, customers, and employees all in one place.
-        </p>
+          <p className="text-sm text-gray-600">
+            Manage your business operations efficiently from one place.
+          </p>
+        </div>
       </div>
     </div>
   );
