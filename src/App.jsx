@@ -7,6 +7,9 @@ import Customers from './pages/Customers';
 import Employees from './pages/Employees';
 import Services from './pages/Services';
 import CareerRequests from './pages/CareerRequests';
+import WebsiteCareerRequests from './pages/WebsiteCareerRequests';
+import WebsiteContactRequests from './pages/WebsiteContactRequests';
+import WebsiteTrainingRequests from './pages/WebsiteTrainingRequests';
 import Login from './pages/Login';
 
 const ProtectedRoute = ({ children }) => {
@@ -63,6 +66,9 @@ const App = () => {
         <Route path="employees" element={<Employees />} />
         <Route path="services" element={<Services />} />
         <Route path="career-requests" element={<CareerRequests />} />
+        <Route path="website-career-requests" element={<WebsiteCareerRequests />} />
+        <Route path="website-contact-requests" element={<WebsiteContactRequests />} />
+        <Route path="website-training-requests" element={<WebsiteTrainingRequests />} />
         <Route path="*" element={<Navigate to="/leads" replace />} />
       </Route>
     </Routes>
