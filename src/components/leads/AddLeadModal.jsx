@@ -139,7 +139,7 @@ const AddLeadModal = ({ isOpen, onClose, lead = null, onSuccess }) => {
               value={formData.status}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
             >
               {statusOptions.map((status) => (
                 <option key={status} value={status}>
@@ -160,7 +160,7 @@ const AddLeadModal = ({ isOpen, onClose, lead = null, onSuccess }) => {
               value={formData.customerName}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
               placeholder="Enter customer name"
             />
           </div>
@@ -177,7 +177,7 @@ const AddLeadModal = ({ isOpen, onClose, lead = null, onSuccess }) => {
               onChange={handleChange}
               required
               pattern="[0-9]{10}"
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
               placeholder="Enter 10-digit mobile number"
             />
           </div>
@@ -193,7 +193,7 @@ const AddLeadModal = ({ isOpen, onClose, lead = null, onSuccess }) => {
               onChange={handleChange}
               required
               rows="3"
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all resize-none"
               placeholder="Enter complete address"
             />
           </div>
@@ -209,7 +209,7 @@ const AddLeadModal = ({ isOpen, onClose, lead = null, onSuccess }) => {
               onChange={handleChange}
               required
               disabled={loadingServices}
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <option value="">
                 {loadingServices ? 'Loading services...' : 'Select a service'}
@@ -233,7 +233,7 @@ const AddLeadModal = ({ isOpen, onClose, lead = null, onSuccess }) => {
                 name="followupDate"
                 value={formData.followupDate}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
               />
             </div>
             <div>
@@ -245,7 +245,7 @@ const AddLeadModal = ({ isOpen, onClose, lead = null, onSuccess }) => {
                 name="followupTime"
                 value={formData.followupTime}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
               />
             </div>
           </div>
@@ -260,7 +260,7 @@ const AddLeadModal = ({ isOpen, onClose, lead = null, onSuccess }) => {
               value={formData.comments}
               onChange={handleChange}
               rows="4"
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all resize-none"
               placeholder="Add any additional notes or comments"
             />
           </div>
@@ -277,7 +277,7 @@ const AddLeadModal = ({ isOpen, onClose, lead = null, onSuccess }) => {
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-6 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 order-1 sm:order-2"
+              className="flex-1 px-6 py-2.5 bg-primary-500 text-white rounded-lg text-sm font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 order-1 sm:order-2"
             >
               {loading && (
                 <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -295,3 +295,4 @@ const AddLeadModal = ({ isOpen, onClose, lead = null, onSuccess }) => {
 };
 
 export default AddLeadModal;
+

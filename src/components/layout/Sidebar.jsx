@@ -30,7 +30,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         {/* Logo/Brand */}
         <div className="h-16 flex items-center justify-between px-5 border-b border-gray-100">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-indigo-600 rounded-lg flex items-center justify-center">
+            <div className="w-9 h-9 bg-primary-500 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-base">C</span>
             </div>
             <div>
@@ -59,7 +59,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-normal transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-indigo-50 text-indigo-700'
+                      ? 'bg-primary-50 text-primary-600'
                       : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                   }`
                 }
@@ -76,3 +76,4 @@ const Sidebar = ({ isOpen, onClose }) => {
 };
 
 export default Sidebar;
+

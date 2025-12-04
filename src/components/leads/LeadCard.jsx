@@ -10,7 +10,7 @@ const LeadCard = ({ lead, onEdit, onDelete }) => {
       'Details send in Whatsapp': 'bg-purple-100 text-purple-700',
       'More Changes to be Customer': 'bg-orange-100 text-orange-700',
       'Confirmed': 'bg-teal-100 text-teal-700',
-      'Customer': 'bg-indigo-100 text-indigo-700',
+      'Customer': 'bg-primary-100 text-primary-600',
     };
     return colors[status] || 'bg-gray-100 text-gray-700';
   };
@@ -30,7 +30,7 @@ const LeadCard = ({ lead, onEdit, onDelete }) => {
         <div className="flex gap-2">
           <button
             onClick={() => onEdit(lead)}
-            className="p-2 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg transition-colors cursor-pointer"
+            className="p-2 text-gray-600 hover:bg-primary-50 hover:text-primary-500 rounded-lg transition-colors cursor-pointer"
             title="Edit"
           >
             <SquarePen className="w-4 h-4" />
@@ -93,3 +93,4 @@ const LeadCard = ({ lead, onEdit, onDelete }) => {
 };
 
 export default LeadCard;
+

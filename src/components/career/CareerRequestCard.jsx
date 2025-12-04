@@ -25,7 +25,7 @@ const CareerRequestCard = ({ careerRequest, onEdit, onDelete }) => {
             {careerRequest.employeeName}
           </h3>
           {careerRequest.requestedFor && (
-            <span className="inline-block px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700">
+            <span className="inline-block px-2.5 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-600">
               {careerRequest.requestedFor}
             </span>
           )}
@@ -33,7 +33,7 @@ const CareerRequestCard = ({ careerRequest, onEdit, onDelete }) => {
         <div className="flex gap-2">
           <button
             onClick={() => onEdit(careerRequest)}
-            className="p-2 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg transition-colors cursor-pointer"
+            className="p-2 text-gray-600 hover:bg-primary-50 hover:text-primary-500 rounded-lg transition-colors cursor-pointer"
             title="Edit"
           >
             <SquarePen className="w-4 h-4" />
@@ -79,3 +79,4 @@ const CareerRequestCard = ({ careerRequest, onEdit, onDelete }) => {
 };
 
 export default CareerRequestCard;
+

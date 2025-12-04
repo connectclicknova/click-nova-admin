@@ -119,7 +119,7 @@ const AddCareerRequestModal = ({ isOpen, onClose, careerRequest = null, onSucces
               value={formData.employeeName}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
               placeholder="Enter employee name"
             />
           </div>
@@ -136,7 +136,7 @@ const AddCareerRequestModal = ({ isOpen, onClose, careerRequest = null, onSucces
               onChange={handleChange}
               required
               pattern="[0-9]{10}"
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
               placeholder="Enter 10-digit mobile number"
             />
           </div>
@@ -151,7 +151,7 @@ const AddCareerRequestModal = ({ isOpen, onClose, careerRequest = null, onSucces
               value={formData.address}
               onChange={handleChange}
               rows="3"
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all resize-none"
               placeholder="Enter complete address"
             />
           </div>
@@ -165,7 +165,7 @@ const AddCareerRequestModal = ({ isOpen, onClose, careerRequest = null, onSucces
               name="requestedFor"
               value={formData.requestedFor}
               onChange={handleChange}
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
             >
               <option value="">Select a role</option>
               {roleOptions.map((role) => (
@@ -187,7 +187,7 @@ const AddCareerRequestModal = ({ isOpen, onClose, careerRequest = null, onSucces
                 name="experience"
                 value={formData.experience}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
                 placeholder="e.g., 2-3 years"
               />
             </div>
@@ -199,7 +199,7 @@ const AddCareerRequestModal = ({ isOpen, onClose, careerRequest = null, onSucces
                 name="rating"
                 value={formData.rating}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
               >
                 <option value="">Select rating</option>
                 {ratingOptions.map((rating) => (
@@ -223,7 +223,7 @@ const AddCareerRequestModal = ({ isOpen, onClose, careerRequest = null, onSucces
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-6 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 order-1 sm:order-2"
+              className="flex-1 px-6 py-2.5 bg-primary-500 text-white rounded-lg text-sm font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 order-1 sm:order-2"
             >
               {loading && (
                 <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -241,3 +241,4 @@ const AddCareerRequestModal = ({ isOpen, onClose, careerRequest = null, onSucces
 };
 
 export default AddCareerRequestModal;
+

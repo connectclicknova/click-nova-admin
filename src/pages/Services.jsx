@@ -106,7 +106,7 @@ const Services = () => {
         {!showForm && (
           <button
             onClick={handleAddClick}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors cursor-pointer whitespace-nowrap"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-primary-500 text-white rounded-lg font-medium hover:bg-primary-600 transition-colors cursor-pointer whitespace-nowrap"
           >
             <Plus className="w-5 h-5" />
             <span>Add Service</span>
@@ -126,7 +126,7 @@ const Services = () => {
               value={serviceName}
               onChange={(e) => setServiceName(e.target.value)}
               placeholder="Enter service name"
-              className="flex-1 px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              className="flex-1 px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
               autoFocus
               onKeyPress={(e) => {
                 if (e.key === 'Enter') {
@@ -137,7 +137,7 @@ const Services = () => {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-4 sm:px-6 py-2 sm:py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+              className="px-4 sm:px-6 py-2 sm:py-2.5 bg-primary-500 text-white rounded-lg text-sm font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
             >
               {saving && (
                 <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -163,7 +163,7 @@ const Services = () => {
       {/* Services List */}
       {loading ? (
         <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-          <svg className="inline-block w-12 h-12 text-indigo-600 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <svg className="inline-block w-12 h-12 text-primary-500 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
@@ -205,7 +205,7 @@ const Services = () => {
                       <div className="flex gap-2 justify-end">
                         <button
                           onClick={() => handleEdit(service)}
-                          className="p-2 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg transition-colors cursor-pointer"
+                          className="p-2 text-gray-600 hover:bg-primary-50 hover:text-primary-500 rounded-lg transition-colors cursor-pointer"
                           title="Edit"
                         >
                           <SquarePen className="w-4 h-4" />
@@ -234,7 +234,7 @@ const Services = () => {
           <p className="text-gray-600 mb-6">Get started by adding your first service</p>
           <button
             onClick={handleAddClick}
-            className="px-6 py-2.5 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors cursor-pointer"
+            className="px-6 py-2.5 bg-primary-500 text-white rounded-lg font-medium hover:bg-primary-600 transition-colors cursor-pointer"
           >
             Add Your First Service
           </button>
@@ -245,3 +245,4 @@ const Services = () => {
 };
 
 export default Services;
+

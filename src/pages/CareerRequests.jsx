@@ -130,7 +130,7 @@ const CareerRequests = () => {
         </div>
         <button
           onClick={handleAddRequest}
-          className="flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors cursor-pointer whitespace-nowrap"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 bg-primary-500 text-white rounded-lg font-medium hover:bg-primary-600 transition-colors cursor-pointer whitespace-nowrap"
         >
           <Plus className="w-5 h-5" />
           <span>Add Career Request</span>
@@ -149,7 +149,7 @@ const CareerRequests = () => {
                 placeholder="Search by name, phone..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 sm:pl-10 pr-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                className="w-full pl-9 sm:pl-10 pr-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
               />
             </div>
           </div>
@@ -161,7 +161,7 @@ const CareerRequests = () => {
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
-                className="w-full pl-9 sm:pl-10 pr-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all appearance-none"
+                className="w-full pl-9 sm:pl-10 pr-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all appearance-none"
               >
                 {roleOptions.map((role) => (
                   <option key={role} value={role}>
@@ -177,7 +177,7 @@ const CareerRequests = () => {
             <select
               value={ratingFilter}
               onChange={(e) => setRatingFilter(e.target.value)}
-              className="w-full px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              className="w-full px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
             >
               {ratingOptions.map((rating) => (
                 <option key={rating} value={rating}>
@@ -199,7 +199,7 @@ const CareerRequests = () => {
                   setRoleFilter('All');
                   setRatingFilter('All');
                 }}
-                className="ml-2 text-indigo-600 hover:text-indigo-700 font-medium cursor-pointer"
+                className="ml-2 text-primary-500 hover:text-primary-600 font-medium cursor-pointer"
               >
                 Clear filters
               </button>
@@ -211,7 +211,7 @@ const CareerRequests = () => {
       {/* Career Requests Grid */}
       {loading ? (
         <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-          <svg className="inline-block w-12 h-12 text-indigo-600 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <svg className="inline-block w-12 h-12 text-primary-500 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
@@ -271,7 +271,7 @@ const CareerRequests = () => {
           {!searchTerm && roleFilter === 'All' && ratingFilter === 'All' && (
             <button
               onClick={handleAddRequest}
-              className="px-6 py-2.5 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors cursor-pointer"
+              className="px-6 py-2.5 bg-primary-500 text-white rounded-lg font-medium hover:bg-primary-600 transition-colors cursor-pointer"
             >
               Add Your First Career Request
             </button>
@@ -291,3 +291,4 @@ const CareerRequests = () => {
 };
 
 export default CareerRequests;
+

@@ -19,7 +19,7 @@ const ProtectedRoute = ({ children }) => {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="text-center">
-          <div className="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center mx-auto mb-4 animate-pulse">
+          <div className="w-12 h-12 bg-primary-500 rounded-lg flex items-center justify-center mx-auto mb-4 animate-pulse">
             <span className="text-white font-bold text-xl">C</span>
           </div>
           <p className="text-gray-600 text-sm">Loading...</p>
@@ -42,7 +42,7 @@ const App = () => {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="text-center">
-          <div className="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center mx-auto mb-4 animate-pulse">
+          <div className="w-12 h-12 bg-primary-500 rounded-lg flex items-center justify-center mx-auto mb-4 animate-pulse">
             <span className="text-white font-bold text-xl">C</span>
           </div>
           <p className="text-gray-600 text-sm">Loading...</p>

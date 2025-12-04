@@ -31,7 +31,7 @@ const Header = ({ onMenuClick }) => {
 
       <div className="flex items-center gap-2 sm:gap-4">
         <div className="hidden sm:flex items-center gap-3">
-          <div className="w-8 h-8 lg:w-10 lg:h-10 bg-indigo-600 rounded-full flex items-center justify-center">
+          <div className="w-8 h-8 lg:w-10 lg:h-10 bg-primary-500 rounded-full flex items-center justify-center">
             <span className="text-white font-semibold text-xs lg:text-sm">
               {user?.email?.charAt(0).toUpperCase() || 'A'}
             </span>
@@ -54,3 +54,4 @@ const Header = ({ onMenuClick }) => {
 };
 
 export default Header;
+
