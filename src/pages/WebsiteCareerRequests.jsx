@@ -1,13 +1,19 @@
 import { useState, useEffect } from 'react';
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import { Search, Briefcase, Mail, Phone, MapPin, GraduationCap, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Briefcase, Mail, Phone, MapPin, GraduationCap, Calendar, ChevronLeft, ChevronRight, Edit, Trash2 } from 'lucide-react';
+import EditCareerRequestModal from '../components/website/EditCareerRequestModal';
+import DeleteConfirmModal from '../components/website/DeleteConfirmModal';
 
 const WebsiteCareerRequests = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const itemsPerPage = 24;
 
   useEffect(() => {
@@ -62,6 +68,31 @@ const WebsiteCareerRequests = () => {
       case 'contacted': return 'bg-green-100 text-green-700';
       case 'rejected': return 'bg-red-100 text-red-700';
       default: return 'bg-gray-100 text-gray-700';
+    }
+  };
+
+  const handleEdit = (request) => {
+    setSelectedRequest(request);
+    setIsEditModalOpen(true);
+  };
+
+  const handleDelete = (request) => {
+    setSelectedRequest(request);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedRequest) return;
+    setDeleteLoading(true);
+    try {
+      await deleteDoc(doc(db, 'careersfromwebsite', selectedRequest.id));
+      setIsDeleteModalOpen(false);
+      setSelectedRequest(null);
+    } catch (error) {
+      console.error('Error deleting request:', error);
+      alert('Failed to delete request');
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -120,6 +151,22 @@ const WebsiteCareerRequests = () => {
                     <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(request.status)}`}>
                       {request.status || 'new'}
                     </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => handleEdit(request)}
+                      className="p-2 text-gray-600 hover:bg-primary-50 hover:text-primary-500 rounded-lg transition-colors cursor-pointer"
+                      title="Edit status"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(request)}
+                      className="p-2 text-gray-600 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors cursor-pointer"
+                      title="Delete request"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
 
@@ -203,6 +250,33 @@ const WebsiteCareerRequests = () => {
           </div>
         </div>
       )}
+
+      {/* Edit Modal */}
+      <EditCareerRequestModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedRequest(null);
+        }}
+        request={selectedRequest}
+        onSuccess={() => {
+          setIsEditModalOpen(false);
+          setSelectedRequest(null);
+        }}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setSelectedRequest(null);
+        }}
+        onConfirm={confirmDelete}
+        loading={deleteLoading}
+        title="Delete Career Request"
+        message="Are you sure you want to delete this career request? This action cannot be undone."
+      />
     </div>
   );
 };
