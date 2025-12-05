@@ -61,7 +61,7 @@ const EmployeeCard = ({ employee, onEdit, onDelete, onView }) => {
         <div className="flex gap-2">
           <button
             onClick={() => onView(employee)}
-            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"
+            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium cursor-pointer"
           >
             <Eye className="w-4 h-4" />
             <span>View</span>
@@ -69,7 +69,7 @@ const EmployeeCard = ({ employee, onEdit, onDelete, onView }) => {
           
           <button
             onClick={() => onEdit(employee)}
-            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-primary-50 text-primary-600 rounded-lg hover:bg-primary-100 transition-colors text-sm font-medium"
+            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-primary-50 text-primary-600 rounded-lg hover:bg-primary-100 transition-colors text-sm font-medium cursor-pointer"
           >
             <Edit className="w-4 h-4" />
             <span>Edit</span>
@@ -77,7 +77,7 @@ const EmployeeCard = ({ employee, onEdit, onDelete, onView }) => {
           
           <button
             onClick={() => onDelete(employee)}
-            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium"
+            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium cursor-pointer"
           >
             <Trash2 className="w-4 h-4" />
             <span>Delete</span>

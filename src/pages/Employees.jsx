@@ -130,7 +130,7 @@ const Employees = () => {
         </div>
         <button
           onClick={handleAddEmployee}
-          className="flex items-center justify-center gap-2 px-4 py-2.5 bg-primary-500 text-white rounded-lg font-medium hover:bg-primary-600 transition-colors cursor-pointer whitespace-nowrap"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 bg-primary-500 text-white rounded-lg font-medium hover:bg-primary-600 transition-colors whitespace-nowrap cursor-pointer"
         >
           <Plus className="w-5 h-5" />
           <span>Add Employee</span>
@@ -215,7 +215,7 @@ const Employees = () => {
           {!searchTerm && roleFilter === 'All' && (
             <button
               onClick={handleAddEmployee}
-              className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors cursor-pointer"
             >
               <Plus className="w-5 h-5" />
               Add Employee
@@ -242,7 +242,7 @@ const Employees = () => {
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
@@ -260,7 +260,7 @@ const Employees = () => {
                       <button
                         key={pageNumber}
                         onClick={() => handlePageChange(pageNumber)}
-                        className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg font-medium transition-colors ${
+                        className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg font-medium transition-colors cursor-pointer ${
                           currentPage === pageNumber
                             ? 'bg-primary-500 text-white'
                             : 'border border-gray-300 hover:bg-gray-50'
@@ -282,7 +282,7 @@ const Employees = () => {
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
