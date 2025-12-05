@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X, Upload, User } from 'lucide-react';
-import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '../../config/firebase';
+import { collection, addDoc, updateDoc, doc, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../../config/firebase';
 
 const AddEmployeeModal = ({ isOpen, onClose, employee = null }) => {
   const [loading, setLoading] = useState(false);
@@ -11,6 +10,7 @@ const AddEmployeeModal = ({ isOpen, onClose, employee = null }) => {
   const [aadharFile, setAadharFile] = useState(null);
   
   const [formData, setFormData] = useState({
+    employeeId: '',
     profilePicUrl: '',
     employeeName: '',
     mobileNumber: '',
@@ -18,6 +18,7 @@ const AddEmployeeModal = ({ isOpen, onClose, employee = null }) => {
     email: '',
     address: '',
     role: '',
+    status: 'Active',
     dateOfBirth: '',
     emergencyContactRelation: '',
     emergencyContactName: '',
@@ -31,12 +32,33 @@ const AddEmployeeModal = ({ isOpen, onClose, employee = null }) => {
       setFormData(employee);
       setProfilePicPreview(employee.profilePicUrl || null);
     } else {
-      resetForm();
+      generateEmployeeId();
     }
   }, [employee, isOpen]);
 
+  const generateEmployeeId = async () => {
+    let newId;
+    let isUnique = false;
+
+    while (!isUnique) {
+      // Generate random 8-digit number
+      newId = Math.floor(10000000 + Math.random() * 90000000).toString();
+      
+      // Check if ID already exists
+      const q = query(collection(db, 'employees'), where('employeeId', '==', newId));
+      const querySnapshot = await getDocs(q);
+      
+      if (querySnapshot.empty) {
+        isUnique = true;
+      }
+    }
+
+    setFormData(prev => ({ ...prev, employeeId: newId }));
+  };
+
   const resetForm = () => {
     setFormData({
+      employeeId: '',
       profilePicUrl: '',
       employeeName: '',
       mobileNumber: '',
@@ -44,6 +66,7 @@ const AddEmployeeModal = ({ isOpen, onClose, employee = null }) => {
       email: '',
       address: '',
       role: '',
+      status: 'Active',
       dateOfBirth: '',
       emergencyContactRelation: '',
       emergencyContactName: '',
@@ -75,10 +98,32 @@ const AddEmployeeModal = ({ isOpen, onClose, employee = null }) => {
     }
   };
 
-  const uploadFile = async (file, path) => {
-    const storageRef = ref(storage, `${path}/${Date.now()}_${file.name}`);
-    await uploadBytes(storageRef, file);
-    return await getDownloadURL(storageRef);
+  const uploadToImageKit = async (file, employeeId, type) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('fileName', `${employeeId}_${type}_${Date.now()}`);
+      formData.append('folder', `/Employees/${employeeId}`);
+
+      const response = await fetch('https://upload.imagekit.io/api/v1/files/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${btoa(import.meta.env.VITE_IMAGEKIT_PRIVATE_KEY + ':')}`,
+        },
+        body: formData
+      });
+
+      const data = await response.json();
+      
+      if (data.url) {
+        return data.url;
+      } else {
+        throw new Error('Failed to upload to ImageKit');
+      }
+    } catch (error) {
+      console.error('ImageKit upload error:', error);
+      throw error;
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -89,14 +134,14 @@ const AddEmployeeModal = ({ isOpen, onClose, employee = null }) => {
       let profilePicUrl = formData.profilePicUrl;
       let aadharFileUrl = formData.aadharFileUrl;
 
-      // Upload profile picture if new file selected
+      // Upload profile picture to ImageKit if new file selected
       if (profilePicFile) {
-        profilePicUrl = await uploadFile(profilePicFile, 'employees/profiles');
+        profilePicUrl = await uploadToImageKit(profilePicFile, formData.employeeId, 'profile');
       }
 
-      // Upload aadhar file if new file selected
+      // Upload aadhar file to ImageKit if new file selected
       if (aadharFile) {
-        aadharFileUrl = await uploadFile(aadharFile, 'employees/aadhar');
+        aadharFileUrl = await uploadToImageKit(aadharFile, formData.employeeId, 'aadhar');
       }
 
       const employeeData = {
@@ -107,8 +152,9 @@ const AddEmployeeModal = ({ isOpen, onClose, employee = null }) => {
       };
 
       if (employee) {
-        // Update existing employee
-        await updateDoc(doc(db, 'employees', employee.id), employeeData);
+        // Update existing employee (exclude employeeId from update)
+        const { employeeId, ...updateData } = employeeData;
+        await updateDoc(doc(db, 'employees', employee.id), updateData);
       } else {
         // Add new employee
         await addDoc(collection(db, 'employees'), {
@@ -174,6 +220,21 @@ const AddEmployeeModal = ({ isOpen, onClose, employee = null }) => {
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Basic Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Employee ID - Non-editable */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Employee ID <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.employeeId}
+                  readOnly
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed outline-none"
+                  placeholder="Auto-generated"
+                />
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Employee Name <span className="text-red-500">*</span>
@@ -248,24 +309,45 @@ const AddEmployeeModal = ({ isOpen, onClose, employee = null }) => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Role <span className="text-red-500">*</span>
                 </label>
-                <select
+                <input
+                  type="text"
                   required
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
-                >
-                  <option value="">Select Role</option>
-                  <option value="Manager">Manager</option>
-                  <option value="Developer">Developer</option>
-                  <option value="Designer">Designer</option>
-                  <option value="Sales Executive">Sales Executive</option>
-                  <option value="Marketing Executive">Marketing Executive</option>
-                  <option value="HR">HR</option>
-                  <option value="Accountant">Accountant</option>
-                  <option value="Support Staff">Support Staff</option>
-                  <option value="Intern">Intern</option>
-                  <option value="Other">Other</option>
-                </select>
+                  placeholder="e.g., Manager, Developer, Designer"
+                />
+              </div>
+
+              {/* Status Field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Status <span className="text-red-500">*</span>
+                </label>
+                <div className="flex gap-4 mt-2">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="status"
+                      value="Active"
+                      checked={formData.status === 'Active'}
+                      onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                      className="w-4 h-4 text-primary-500 focus:ring-2 focus:ring-primary-500 cursor-pointer"
+                    />
+                    <span className="text-sm font-medium text-gray-700">Active</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="status"
+                      value="Inactive"
+                      checked={formData.status === 'Inactive'}
+                      onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                      className="w-4 h-4 text-primary-500 focus:ring-2 focus:ring-primary-500 cursor-pointer"
+                    />
+                    <span className="text-sm font-medium text-gray-700">Inactive</span>
+                  </label>
+                </div>
               </div>
 
               <div className="md:col-span-2">

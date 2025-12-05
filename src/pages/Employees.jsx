@@ -105,9 +105,33 @@ const Employees = () => {
     setIsDeleteModalOpen(true);
   };
 
+  const deleteFromImageKit = async (employeeId) => {
+    try {
+      // Delete entire employee folder from ImageKit
+      const response = await fetch(`https://api.imagekit.io/v1/files?path=/Employees/${employeeId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Basic ${btoa(import.meta.env.VITE_IMAGEKIT_PRIVATE_KEY + ':')}`,
+        }
+      });
+
+      if (!response.ok) {
+        console.warn('Failed to delete ImageKit folder:', await response.text());
+      }
+    } catch (error) {
+      console.error('Error deleting from ImageKit:', error);
+    }
+  };
+
   const handleDeleteConfirm = async () => {
     if (selectedEmployee) {
       try {
+        // Delete from ImageKit first
+        if (selectedEmployee.employeeId) {
+          await deleteFromImageKit(selectedEmployee.employeeId);
+        }
+
+        // Then delete from Firestore
         await deleteDoc(doc(db, 'employees', selectedEmployee.id));
         setIsDeleteModalOpen(false);
         setSelectedEmployee(null);
