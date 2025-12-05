@@ -14,6 +14,8 @@ const CareerRequests = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('All');
   const [ratingFilter, setRatingFilter] = useState('All');
+  const [visitDetailsFilter, setVisitDetailsFilter] = useState('All');
+  const [interviewPostponedFilter, setInterviewPostponedFilter] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 24;
 
@@ -78,9 +80,19 @@ const CareerRequests = () => {
       result = result.filter((request) => request.rating === ratingFilter);
     }
 
+    // Visit Details filter
+    if (visitDetailsFilter !== 'All') {
+      result = result.filter((request) => request.visitDetails === visitDetailsFilter);
+    }
+
+    // Interview Postponed filter
+    if (interviewPostponedFilter !== 'All') {
+      result = result.filter((request) => request.interviewPostponed === interviewPostponedFilter);
+    }
+
     setFilteredRequests(result);
     setCurrentPage(1); // Reset to first page when filters change
-  }, [careerRequests, searchTerm, roleFilter, ratingFilter]);
+  }, [careerRequests, searchTerm, roleFilter, ratingFilter, visitDetailsFilter, interviewPostponedFilter]);
 
   // Pagination
   const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
@@ -139,7 +151,7 @@ const CareerRequests = () => {
 
       {/* Search and Filters */}
       <div className="bg-white rounded-xl border border-gray-200 p-3 sm:p-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4">
           {/* Search */}
           <div className="sm:col-span-2 lg:col-span-2">
             <div className="relative">
@@ -186,18 +198,46 @@ const CareerRequests = () => {
               ))}
             </select>
           </div>
+
+          {/* Visit Details Filter */}
+          <div>
+            <select
+              value={visitDetailsFilter}
+              onChange={(e) => setVisitDetailsFilter(e.target.value)}
+              className="w-full px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+            >
+              <option value="All">All Visit Details</option>
+              <option value="sent">Sent</option>
+              <option value="not sent">Not Sent</option>
+            </select>
+          </div>
+
+          {/* Interview Postponed Filter */}
+          <div>
+            <select
+              value={interviewPostponedFilter}
+              onChange={(e) => setInterviewPostponedFilter(e.target.value)}
+              className="w-full px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+            >
+              <option value="All">Interview Status</option>
+              <option value="no">Not Postponed</option>
+              <option value="yes">Postponed</option>
+            </select>
+          </div>
         </div>
 
         {/* Results Count */}
         <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-200">
           <p className="text-xs sm:text-sm text-gray-600">
             Showing {currentRequests.length} of {filteredRequests.length} career requests
-            {(searchTerm || roleFilter !== 'All' || ratingFilter !== 'All') && (
+            {(searchTerm || roleFilter !== 'All' || ratingFilter !== 'All' || visitDetailsFilter !== 'All' || interviewPostponedFilter !== 'All') && (
               <button
                 onClick={() => {
                   setSearchTerm('');
                   setRoleFilter('All');
                   setRatingFilter('All');
+                  setVisitDetailsFilter('All');
+                  setInterviewPostponedFilter('All');
                 }}
                 className="ml-2 text-primary-500 hover:text-primary-600 font-medium cursor-pointer"
               >
