@@ -11,6 +11,9 @@ const AddCareerRequestModal = ({ isOpen, onClose, careerRequest = null, onSucces
     requestedFor: '',
     experience: '',
     rating: '',
+    visitDetails: 'not sent',
+    interviewDateTime: '',
+    interviewPostponed: 'no',
   });
   const [loading, setLoading] = useState(false);
 
@@ -40,6 +43,9 @@ const AddCareerRequestModal = ({ isOpen, onClose, careerRequest = null, onSucces
         requestedFor: careerRequest.requestedFor || '',
         experience: careerRequest.experience || '',
         rating: careerRequest.rating || '',
+        visitDetails: careerRequest.visitDetails || 'not sent',
+        interviewDateTime: careerRequest.interviewDateTime || '',
+        interviewPostponed: careerRequest.interviewPostponed || 'no',
       });
     } else {
       setFormData({
@@ -49,6 +55,9 @@ const AddCareerRequestModal = ({ isOpen, onClose, careerRequest = null, onSucces
         requestedFor: '',
         experience: '',
         rating: '',
+        visitDetails: 'not sent',
+        interviewDateTime: '',
+        interviewPostponed: 'no',
       });
     }
   }, [careerRequest, isOpen]);
@@ -209,6 +218,52 @@ const AddCareerRequestModal = ({ isOpen, onClose, careerRequest = null, onSucces
                 ))}
               </select>
             </div>
+          </div>
+
+          {/* Visit Details and Interview Postponed */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Visit Details
+              </label>
+              <select
+                name="visitDetails"
+                value={formData.visitDetails}
+                onChange={handleChange}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+              >
+                <option value="sent">Sent</option>
+                <option value="not sent">Not Sent</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Interview Postponed
+              </label>
+              <select
+                name="interviewPostponed"
+                value={formData.interviewPostponed}
+                onChange={handleChange}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+              >
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Interview Date and Time */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Interview Date and Time
+            </label>
+            <input
+              type="datetime-local"
+              name="interviewDateTime"
+              value={formData.interviewDateTime}
+              onChange={handleChange}
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+            />
           </div>
 
           {/* Actions */}

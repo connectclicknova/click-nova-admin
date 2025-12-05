@@ -1,4 +1,4 @@
-import { SquarePen, Trash2, Phone, MapPin, Briefcase, Star, Award } from 'lucide-react';
+import { SquarePen, Trash2, Phone, MapPin, Briefcase, Star, Award, CalendarClock, FileCheck } from 'lucide-react';
 
 const CareerRequestCard = ({ careerRequest, onEdit, onDelete }) => {
   const renderStars = (rating) => {
@@ -74,6 +74,29 @@ const CareerRequestCard = ({ careerRequest, onEdit, onDelete }) => {
         )}
         {careerRequest.rating && renderStars(careerRequest.rating)}
       </div>
+
+      {/* Additional Details */}
+      {(careerRequest.visitDetails || careerRequest.interviewDateTime || careerRequest.interviewPostponed) && (
+        <div className="space-y-2 pt-3 border-t border-gray-100 mt-3">
+          {careerRequest.visitDetails && (
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <FileCheck className="w-4 h-4" />
+              <span className="text-xs">Visit Details: <span className={`font-medium ${careerRequest.visitDetails === 'sent' ? 'text-green-600' : 'text-orange-600'}`}>{careerRequest.visitDetails === 'sent' ? 'Sent' : 'Not Sent'}</span></span>
+            </div>
+          )}
+          {careerRequest.interviewDateTime && (
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <CalendarClock className="w-4 h-4" />
+              <span className="text-xs">{new Date(careerRequest.interviewDateTime).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+            </div>
+          )}
+          {careerRequest.interviewPostponed && careerRequest.interviewPostponed === 'yes' && (
+            <div className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-medium">
+              Interview Postponed
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
