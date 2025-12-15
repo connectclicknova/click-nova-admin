@@ -4,6 +4,7 @@ import MainLayout from './components/layout/MainLayout';
 import Dashboard from './pages/Dashboard';
 import Leads from './pages/Leads';
 import Customers from './pages/Customers';
+import CustomerDetail from './pages/CustomerDetail';
 import Employees from './pages/Employees';
 import Services from './pages/Services';
 import CareerRequests from './pages/CareerRequests';
@@ -63,6 +64,7 @@ const App = () => {
         <Route index element={<Navigate to="/leads" replace />} />
         <Route path="leads" element={<Leads />} />
         <Route path="customers" element={<Customers />} />
+        <Route path="customers/:customerId" element={<CustomerDetail />} />
         <Route path="employees" element={<Employees />} />
         <Route path="services" element={<Services />} />
         <Route path="career-requests" element={<CareerRequests />} />
