@@ -16,6 +16,9 @@ const CustomerCard = ({ customer, onEdit, onDelete }) => {
           <h3 className="text-base font-semibold text-gray-800 mb-1">
             {customer.customerName}
           </h3>
+          {customer.businessName && (
+            <p className="text-sm text-gray-600 mb-2">{customer.businessName}</p>
+          )}
           <span className="inline-block px-2.5 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-600">
             Customer
           </span>

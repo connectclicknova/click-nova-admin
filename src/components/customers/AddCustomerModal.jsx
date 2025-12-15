@@ -5,6 +5,7 @@ import { db } from '../../config/firebase';
 
 const AddCustomerModal = ({ isOpen, onClose, customer = null }) => {
   const [formData, setFormData] = useState({
+    businessName: '',
     customerName: '',
     mobileNumber: '',
     address: '',
@@ -14,12 +15,14 @@ const AddCustomerModal = ({ isOpen, onClose, customer = null }) => {
   useEffect(() => {
     if (customer) {
       setFormData({
+        businessName: customer.businessName || '',
         customerName: customer.customerName || '',
         mobileNumber: customer.mobileNumber || '',
         address: customer.address || '',
       });
     } else {
       setFormData({
+        businessName: '',
         customerName: '',
         mobileNumber: '',
         address: '',
@@ -55,6 +58,7 @@ const AddCustomerModal = ({ isOpen, onClose, customer = null }) => {
       }
       onClose();
       setFormData({
+        businessName: '',
         customerName: '',
         mobileNumber: '',
         address: '',
@@ -88,6 +92,22 @@ const AddCustomerModal = ({ isOpen, onClose, customer = null }) => {
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6">
           <div className="space-y-4">
+            {/* Business Name */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Business Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                name="businessName"
+                value={formData.businessName}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                required
+                placeholder="Enter business name"
+              />
+            </div>
+
             {/* Customer Name */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">

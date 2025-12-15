@@ -214,6 +214,9 @@ const CustomerDetail = () => {
             </div>
             <div>
               <h2 className="text-2xl font-bold text-white">{customer.customerName}</h2>
+              {customer.businessName && (
+                <p className="text-primary-50 text-sm">{customer.businessName}</p>
+              )}
               <p className="text-primary-100">Customer ID: {customer.id}</p>
             </div>
           </div>
@@ -267,6 +270,18 @@ const CustomerDetail = () => {
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Contact Information</h3>
                 <div className="space-y-4">
+                  {customer.businessName && (
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 bg-primary-50 rounded-lg">
+                        <User className="w-5 h-5 text-primary-500" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Business Name</p>
+                        <p className="text-base font-medium text-gray-800">{customer.businessName}</p>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="flex items-start gap-3">
                     <div className="p-2 bg-primary-50 rounded-lg">
                       <Phone className="w-5 h-5 text-primary-500" />
