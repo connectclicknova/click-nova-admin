@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { collection, onSnapshot, deleteDoc, doc, orderBy, query } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { Plus, Search, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
 import AddEmployeeModal from '../components/employees/AddEmployeeModal';
 import EmployeeCard from '../components/employees/EmployeeCard';
-import ViewEmployeeModal from '../components/employees/ViewEmployeeModal';
 import DeleteConfirmModal from '../components/website/DeleteConfirmModal';
 
 const Employees = () => {
+  const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
   const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -96,8 +96,7 @@ const Employees = () => {
   };
 
   const handleViewEmployee = (employee) => {
-    setSelectedEmployee(employee);
-    setIsViewModalOpen(true);
+    navigate(`/employees/${employee.id}`);
   };
 
   const handleDeleteClick = (employee) => {
@@ -320,15 +319,6 @@ const Employees = () => {
         isOpen={isAddModalOpen}
         onClose={() => {
           setIsAddModalOpen(false);
-          setSelectedEmployee(null);
-        }}
-        employee={selectedEmployee}
-      />
-
-      <ViewEmployeeModal
-        isOpen={isViewModalOpen}
-        onClose={() => {
-          setIsViewModalOpen(false);
           setSelectedEmployee(null);
         }}
         employee={selectedEmployee}

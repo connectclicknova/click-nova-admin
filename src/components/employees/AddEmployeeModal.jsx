@@ -24,7 +24,11 @@ const AddEmployeeModal = ({ isOpen, onClose, employee = null }) => {
     emergencyContactName: '',
     emergencyContactMobile: '',
     aadharNumber: '',
-    aadharFileUrl: ''
+    aadharFileUrl: '',
+    accountHolderName: '',
+    accountNumber: '',
+    bankName: '',
+    ifscCode: ''
   });
 
   useEffect(() => {
@@ -72,7 +76,11 @@ const AddEmployeeModal = ({ isOpen, onClose, employee = null }) => {
       emergencyContactName: '',
       emergencyContactMobile: '',
       aadharNumber: '',
-      aadharFileUrl: ''
+      aadharFileUrl: '',
+      accountHolderName: '',
+      accountNumber: '',
+      bankName: '',
+      ifscCode: ''
     });
     setProfilePicPreview(null);
     setProfilePicFile(null);
@@ -410,6 +418,69 @@ const AddEmployeeModal = ({ isOpen, onClose, employee = null }) => {
                   onChange={(e) => setFormData({ ...formData, emergencyContactMobile: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
                   placeholder="10-digit mobile number"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Bank Account Details */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Bank Account Details</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Account Holder Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.accountHolderName}
+                  onChange={(e) => setFormData({ ...formData, accountHolderName: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                  placeholder="Enter account holder name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Account Number <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.accountNumber}
+                  onChange={(e) => setFormData({ ...formData, accountNumber: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                  placeholder="Enter account number"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Bank Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.bankName}
+                  onChange={(e) => setFormData({ ...formData, bankName: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                  placeholder="Enter bank name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  IFSC Code <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  pattern="[A-Z]{4}0[A-Z0-9]{6}"
+                  value={formData.ifscCode}
+                  onChange={(e) => setFormData({ ...formData, ifscCode: e.target.value.toUpperCase() })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                  placeholder="e.g., SBIN0001234"
                 />
               </div>
             </div>

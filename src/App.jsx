@@ -6,6 +6,7 @@ import Leads from './pages/Leads';
 import Customers from './pages/Customers';
 import CustomerDetail from './pages/CustomerDetail';
 import Employees from './pages/Employees';
+import EmployeeDetail from './pages/EmployeeDetail';
 import Services from './pages/Services';
 import CareerRequests from './pages/CareerRequests';
 import WebsiteCareerRequests from './pages/WebsiteCareerRequests';
@@ -66,6 +67,7 @@ const App = () => {
         <Route path="customers" element={<Customers />} />
         <Route path="customers/:customerId" element={<CustomerDetail />} />
         <Route path="employees" element={<Employees />} />
+        <Route path="employees/:employeeId" element={<EmployeeDetail />} />
         <Route path="services" element={<Services />} />
         <Route path="career-requests" element={<CareerRequests />} />
         <Route path="website-career-requests" element={<WebsiteCareerRequests />} />
