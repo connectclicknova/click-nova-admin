@@ -1,10 +1,11 @@
 import { NavLink } from 'react-router-dom';
-import { UserCircle, Users, Briefcase, Wrench, X, ClipboardList, Globe, MessageSquare, GraduationCap } from 'lucide-react';
+import { UserCircle, Users, Briefcase, Wrench, X, ClipboardList, Globe, MessageSquare, GraduationCap, FileText } from 'lucide-react';
 
 const Sidebar = ({ isOpen, onClose }) => {
   const menuItems = [
     { path: '/leads', label: 'Leads', icon: UserCircle },
     { path: '/customers', label: 'Customers', icon: Users },
+    { path: '/quotations', label: 'Quotations', icon: FileText },
     { path: '/employees', label: 'Employees', icon: Briefcase },
     { path: '/services', label: 'Services', icon: Wrench },
     { path: '/career-requests', label: 'Career Requests', icon: ClipboardList },

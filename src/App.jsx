@@ -13,6 +13,7 @@ import WebsiteCareerRequests from './pages/WebsiteCareerRequests';
 import WebsiteContactRequests from './pages/WebsiteContactRequests';
 import WebsiteTrainingRequests from './pages/WebsiteTrainingRequests';
 import Login from './pages/Login';
+import Quotations from './pages/Quotations';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -73,6 +74,7 @@ const App = () => {
         <Route path="website-career-requests" element={<WebsiteCareerRequests />} />
         <Route path="website-contact-requests" element={<WebsiteContactRequests />} />
         <Route path="website-training-requests" element={<WebsiteTrainingRequests />} />
+        <Route path="/quotations" element={<Quotations />} />
         <Route path="*" element={<Navigate to="/leads" replace />} />
       </Route>
     </Routes>
