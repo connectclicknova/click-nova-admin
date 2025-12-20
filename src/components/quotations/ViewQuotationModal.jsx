@@ -158,7 +158,7 @@ const ViewQuotationModal = ({ isOpen, onClose, quotation }) => {
 
           {/* TABLE */}
           <table className="mb-6">
-            <thead className="bg-green-700 text-white">
+            <thead className="bg-[#377ba4] text-white">
               <tr>
                 <th>S.No</th>
                 <th>Description</th>
@@ -182,7 +182,7 @@ const ViewQuotationModal = ({ isOpen, onClose, quotation }) => {
                   <td align="right"><strong>{formatCurrency(item.amount)}</strong></td>
                 </tr>
               ))}
-              <tr>
+              <tr className='bg-[#fe9829]'>
                 <td colSpan="5" align="right"><strong>GRAND TOTAL</strong></td>
                 <td align="right"><strong>{formatCurrency(quotation.grandTotal)}</strong></td>
               </tr>
